@@ -280,7 +280,7 @@ Packet* RakServer::Receive( void )
 
 void RakServer::Kick( const PlayerID playerId )
 {
-	RakPeer::CloseConnection(playerId, true, 0);
+	RakPeer::NotifyAndFlagForDisconnect(playerId, true, 0);
 }
 
 void RakServer::DeallocatePacket( Packet *packet )
@@ -395,6 +395,11 @@ bool RakServer::RPC( char* uniqueID, const char *data, unsigned int bitLength, P
 bool RakServer::RPC( char* uniqueID, RakNet::BitStream *parameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, PlayerID playerId, bool broadcast, bool shiftTimestamp, NetworkID networkID, RakNet::BitStream *replyFromTarget )
 {
 	return RakPeer::RPC( uniqueID, parameters, priority, reliability, orderingChannel, playerId, broadcast, shiftTimestamp, networkID, replyFromTarget );
+}
+
+bool RakServer::RPC( char* uniqueID, RakNet::BitStream *parameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, PlayerID playerId, bool broadcast, bool shiftTimestamp)
+{
+	return RakPeer::RPC( uniqueID, parameters, priority, reliability, orderingChannel, playerId, broadcast, shiftTimestamp, UNASSIGNED_NETWORK_ID, 0 );
 }
 
 void RakServer::SetTrackFrequencyTable( bool b )
